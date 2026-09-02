@@ -1,0 +1,1324 @@
+/* ============================================
+   D&D Character Sheet Style - Dark Card Theme
+   Applies only to notes with: cssclasses containing "dnd-sheet"
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+.dnd-sheet {
+  --dnd-bg: #14161d;
+  --dnd-card: #23262f;
+  --dnd-border: #2a2e3a;
+  --dnd-text: #d7d9e0;
+  --dnd-dim: #8b8f9c;
+  --dnd-accent: #c05a4a;
+}
+
+/* Page background */
+.dnd-sheet .markdown-preview-view,
+.dnd-sheet .markdown-source-view .cm-scroller {
+  background: var(--dnd-bg);
+  color: var(--dnd-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  padding: 26px 34px;
+}
+
+.dnd-sheet h1 {
+  font-family: 'Bitter', serif;
+  color: var(--dnd-accent);
+  font-size: 2em;
+  margin-bottom: 0;
+}
+
+.dnd-sheet h2 {
+  font-family: 'Bitter', serif;
+  color: var(--dnd-accent);
+  font-size: 1.2em;
+  border-bottom: 2px solid var(--dnd-border);
+  padding-bottom: 6px;
+  margin-top: 1.6em;
+}
+
+.dnd-sheet h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  margin-top: 1.4em;
+  margin-bottom: 6px;
+}
+
+/* ===== Base callout = one "card" ===== */
+.dnd-sheet .callout {
+  background: var(--dnd-card);
+  border: 1px solid var(--dnd-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 14px 0;
+}
+
+.dnd-sheet .callout-icon,
+.dnd-sheet .callout-fold {
+  display: none;
+}
+
+.dnd-sheet .callout-title-inner {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.17em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+}
+
+.dnd-sheet .callout-content {
+  color: var(--dnd-text);
+  margin-top: 8px;
+  overflow: auto; /* let content clear any floated image inside */
+}
+
+.dnd-sheet .callout-content > *:first-child {
+  margin-top: 0;
+}
+
+/* ===== [!row] = invisible layout wrapper, lines up nested
+   callouts side by side ===== */
+.dnd-sheet .callout[data-callout="row"] {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 14px 0;
+  overflow: visible;
+}
+.dnd-sheet .callout[data-callout="row"] > .callout-title {
+  display: none;
+}
+.dnd-sheet .callout[data-callout="row"] > .callout-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 0;
+  overflow: visible;
+}
+.dnd-sheet .callout[data-callout="row"] > .callout-content > .callout {
+  flex: 1;
+  min-width: 130px;
+  margin: 0 !important;
+}
+
+/* Make the Overview/Combat Values/Hit Points row's boxes equal height
+   (stretch to match the tallest), instead of each sizing to its own
+   content. Scoped specifically to the row containing "charinfo" so this
+   doesn't affect other [!row] instances elsewhere in the sheet, like
+   Skills/Saves, which intentionally keep flex-start. */
+.dnd-sheet .callout[data-callout="row"]:has(> .callout-content > .callout[data-callout="charinfo"]) > .callout-content {
+  align-items: stretch;
+}
+
+/* Same treatment for the Defenses/Conditions row - equal height, scoped
+   to just this row via its "defenses" child so Skills/Saves is untouched. */
+.dnd-sheet .callout[data-callout="row"]:has(> .callout-content > .callout[data-callout="defenses"]) > .callout-content {
+  align-items: stretch;
+}
+
+/* ===== [!colstack] = invisible wrapper that stacks its nested
+   callouts vertically - used to put Senses under Saving Throws
+   while still counting as ONE column in the row ===== */
+.dnd-sheet .callout[data-callout="colstack"] {
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow: visible;
+}
+.dnd-sheet .callout[data-callout="colstack"] > .callout-title {
+  display: none;
+}
+.dnd-sheet .callout[data-callout="colstack"] > .callout-content {
+  margin-top: 0 !important;
+  padding: 0 !important;
+  overflow: visible;
+}
+.dnd-sheet .callout[data-callout="colstack"] > .callout-content > .callout {
+  margin: 0 0 14px 0 !important;
+}
+.dnd-sheet .callout[data-callout="colstack"] > .callout-content > .callout:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* ===== Row 1 sizing: wide Overview card, smaller Combat/HP cards ===== */
+.dnd-sheet .callout[data-callout="row"] > .callout-content > .callout[data-callout="charinfo"] {
+  flex: 3;
+  min-width: 320px;
+}
+.dnd-sheet .callout[data-callout="row"] > .callout-content > .callout[data-callout="combat"] {
+  flex: 1;
+  min-width: 130px;
+}
+.dnd-sheet .callout[data-callout="row"] > .callout-content > .callout[data-callout="hp"] {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+}
+
+/* Overview: explicit two-column layout - text+buttons on the left,
+   portrait on the right. Previously used float, which relied on the
+   image's DOM wrapper letting following text wrap around it; once the
+   portrait became a DataviewJS-rendered <img> (needed to swap images
+   dynamically), that wrapping broke, so this is now explicit instead
+   of relying on float behavior across block boundaries. */
+.dnd-sheet .overview-flex-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.dnd-sheet .overview-left-col {
+  flex: 1;
+  min-width: 0;
+}
+.dnd-sheet .overview-right-col {
+  flex: 0 0 250px;
+}
+.dnd-sheet .overview-right-col img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+/* ===== Ability score mini-boxes ===== */
+.dnd-sheet .callout[data-callout="stat"] {
+  text-align: center;
+}
+.dnd-sheet .callout[data-callout="stat"] .callout-title-inner {
+  text-align: center;
+  width: 100%;
+  font-size: 1.56em;
+}
+.dnd-sheet .callout[data-callout="stat"] .callout-title {
+  justify-content: center;
+}
+.dnd-sheet .callout[data-callout="stat"] .callout-content p {
+  margin: 2px 0;
+}
+.dnd-sheet .stat-mod {
+  display: block;
+  font-size: 2.3em;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--dnd-text);
+}
+.dnd-sheet .profbonus-value {
+  display: block;
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--dnd-text);
+}
+.dnd-sheet .stat-score {
+  display: block;
+  font-size: 1em;
+  color: var(--dnd-text);
+}
+
+/* Same generic 20px top padding issue as ministat/colstack, applying here
+   too - fixing consistently across all 5 boxes in this row so none is
+   left misaligned relative to the others. */
+.dnd-sheet .callout[data-callout="saves"] > .callout-content,
+.dnd-sheet .callout[data-callout="senses"] > .callout-content,
+.dnd-sheet .callout[data-callout="skills"] > .callout-content,
+.dnd-sheet .callout[data-callout="details"] > .callout-content {
+  margin-top: 0 !important;
+  padding: 0 12px 4px !important;
+}
+
+/* ===== Borderless "list" tables: saves / skills / senses -
+   no grid lines, no header row, just rows of text ===== */
+.dnd-sheet .callout[data-callout="saves"] table thead,
+.dnd-sheet .callout[data-callout="skills"] table thead,
+.dnd-sheet .callout[data-callout="senses"] table thead {
+  display: none;
+}
+.dnd-sheet .callout[data-callout="saves"] table td,
+.dnd-sheet .callout[data-callout="skills"] table td,
+.dnd-sheet .callout[data-callout="senses"] table td {
+  border: none;
+  padding: 3px 4px;
+}
+
+/* ===== Skills column: narrowed 10% from its default flex:1 share ===== */
+.dnd-sheet .callout[data-callout="row"] > .callout-content > .callout[data-callout="skills"] {
+  flex: 0.9;
+}
+
+/* ===== The wide right-hand panel (Character Details / tabs) - widened
+   10% from its previous flex:2 share ===== */
+.dnd-sheet .callout[data-callout="row"] > .callout-content > .callout[data-callout="details"] {
+  flex: 2.2;
+  min-width: 280px;
+}
+.dnd-sheet .spells-panel table {
+  overflow-x: auto;
+  display: block;
+  max-width: 100%;
+}
+
+/* Tab panels: hidden by default, shown only when the note's
+   cssclasses includes the matching tab-* class */
+.dnd-sheet .tab-panel {
+  display: none;
+  margin-top: 10px;
+}
+.dnd-sheet.tab-actions .actions-panel { display: block; }
+.dnd-sheet.tab-spells .spells-panel { display: block; }
+.dnd-sheet.tab-inventory .inventory-panel { display: block; }
+.dnd-sheet.tab-features .features-panel { display: block; }
+.dnd-sheet.tab-notes .notes-panel { display: block; }
+
+/* Generic tables elsewhere (Actions, Spells dataview result, etc.)
+   keep the normal bordered grid look */
+.dnd-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.4em 0;
+}
+.dnd-sheet th {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.72em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  border-bottom: 1px solid var(--dnd-border);
+  padding: 5px 6px;
+  text-align: left;
+}
+.dnd-sheet td {
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--dnd-border);
+  font-size: 0.92em;
+}
+.dnd-sheet strong {
+  color: var(--dnd-text);
+  font-weight: 700;
+}
+
+.dnd-sheet .dataview.table-view-table {
+  background: transparent;
+}
+.dnd-sheet .dataview.table-view-table th {
+  color: var(--dnd-dim);
+}
+.dnd-sheet .dataview.table-view-table a {
+  color: var(--dnd-accent);
+}
+
+.dnd-sheet hr {
+  border: none;
+  border-top: 1px solid var(--dnd-border);
+  margin: 1.6em 0;
+}
+
+/* ===== Mini cards nested inside Combat Values (Armor Class / Initiative / Speed) ===== */
+.dnd-sheet .callout[data-callout="ministat"] {
+  text-align: center;
+  padding: 6px 10px;
+  margin: 0 0 6px 0;
+  background: var(--dnd-bg);
+  overflow: visible !important;
+}
+.dnd-sheet .callout[data-callout="ministat"] .callout-title-inner {
+  font-size: 0.78em;
+}
+.dnd-sheet .callout[data-callout="ministat"] .callout-title {
+  min-height: unset !important;
+  padding: 0 !important;
+}
+.dnd-sheet .callout[data-callout="ministat"] .callout-content {
+  margin-top: 0 !important;
+  overflow: visible !important;
+  padding: 0 12px 4px !important;
+}
+/* Speed's value is generated by a dataviewjs block, which wraps its
+   output in a div carrying an inline style="overflow-x: auto" set by
+   the plugin itself, not by any CSS file - this is the actual element
+   the scrollbar was coming from, confirmed via dev tools inspection. */
+.dnd-sheet .callout[data-callout="ministat"] .block-language-dataviewjs {
+  overflow-x: visible !important;
+  overflow: visible !important;
+}
+.dnd-sheet .callout[data-callout="ministat"]:last-child {
+  margin-bottom: 0;
+}
+.dnd-sheet .ministat-value {
+  display: block;
+  font-size: 2.3em;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--dnd-text);
+}
+
+/* ===== Big HP number, read-only display ===== */
+.dnd-sheet .hp-big {
+  display: block;
+  font-size: 2.3em;
+  font-weight: 700;
+  text-align: center;
+  color: var(--dnd-text);
+  margin-bottom: 4px;
+}
+
+/* ===== Actions tab: category labels + one card per entry ===== */
+.dnd-sheet .action-category {
+  display: block;
+  font-weight: 600;
+  font-size: 0.975em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dnd-accent);
+  margin-top: 14px;
+}
+.dnd-sheet .action-category:first-child {
+  margin-top: 0;
+}
+/* Grid instead of flex means every column always lands in the same
+   pixel position across every row, regardless of name length. No box/
+   background here - just a subtle divider, matching a plain table row
+   rather than a heavy card. !important guards against this getting
+   overridden by other display rules elsewhere in the vault's CSS. */
+.dnd-sheet .action-card {
+  display: grid !important;
+  grid-template-columns: 192px minmax(0, 0.6fr) minmax(0, 0.6fr) 70px 150px 18px !important;
+  align-items: center;
+  column-gap: 14px;
+  border-bottom: 1px solid var(--dnd-border);
+  padding: 6px 2px;
+}
+.dnd-sheet .action-card-header {
+  font-weight: 600;
+  font-size: 0.68em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  border-bottom: 2px solid var(--dnd-border);
+  padding-bottom: 6px;
+}
+.dnd-sheet .action-card-header span {
+  text-align: center;
+}
+.dnd-sheet .action-card-header span:first-child {
+  text-align: left;
+}
+.dnd-sheet .action-card > *:nth-child(2),
+.dnd-sheet .action-card > *:nth-child(3),
+.dnd-sheet .action-card > *:nth-child(4),
+.dnd-sheet .action-card > *:nth-child(5) {
+  text-align: center;
+}
+.dnd-sheet .action-name {
+  font-weight: 600;
+  color: var(--dnd-text);
+  text-align: left;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dnd-sheet .action-stat {
+  font-size: 0.85em;
+  color: var(--dnd-dim);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dnd-sheet .action-stat b {
+  color: var(--dnd-text);
+  font-weight: 700;
+}
+.dnd-sheet .action-btn {
+  background: transparent;
+  border: none;
+  color: var(--dnd-dim);
+  font-size: 0.75em;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: none;
+}
+.dnd-sheet .action-btn:hover {
+  color: var(--dnd-text);
+  background: transparent;
+}
+
+/* Add-entry form: contain it visually so it reads as one unit,
+   separate from the card list below it. The paragraph holding all
+   four fields is forced into one flexible row so Meta Bind's own
+   field widths can't stack them vertically. */
+.dnd-sheet .add-action-form {
+  border: 1px solid var(--dnd-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+}
+.dnd-sheet .add-action-form p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: 0;
+}
+.dnd-sheet .add-action-form p:not(:last-child) {
+  margin-bottom: 14px;
+}
+.dnd-sheet .narrow-input input {
+  max-width: 60px;
+}
+.dnd-sheet .dmgtype-input input {
+  max-width: 90px;
+}
+.dnd-sheet .medium-input input {
+  max-width: 180px;
+}
+
+/* ===== Clean table look shared by Spells and Inventory tabs ===== */
+.dnd-sheet .spells-panel table th,
+.dnd-sheet .inventory-panel table th {
+  font-size: 0.68em;
+  border-bottom: 2px solid var(--dnd-border);
+}
+.dnd-sheet .spells-panel table td,
+.dnd-sheet .inventory-panel table td {
+  font-size: 0.85em;
+  border-bottom: 1px solid var(--dnd-border);
+}
+.dnd-sheet .spells-panel table tr:last-child td,
+.dnd-sheet .inventory-panel table tr:last-child td {
+  border-bottom: none;
+}
+.dnd-sheet .spells-panel table td:first-child a {
+  font-style: italic;
+  font-weight: 600;
+}
+.dnd-sheet .inventory-panel table td:first-child {
+  font-weight: 600;
+}
+
+/* Space out Meta Bind buttons (Damage/Heal, the tab bar, etc.).
+   Margin on every button (not just via +adjacency) so it still works
+   even if Meta Bind wraps each button in its own container div. */
+.dnd-sheet button {
+  margin: 2px 4px 2px 0;
+}
+
+/* "Update All" button, sitting right below the Add form */
+.dnd-sheet .action-btn-update {
+  background: var(--dnd-accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.85em;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* Bulk-edit modal - a full-screen overlay with a centered box,
+   built directly in JS rather than through a separate plugin */
+.action-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.action-modal {
+  background: var(--dnd-card, #1b1e27);
+  border: 1px solid var(--dnd-border, #2a2e3a);
+  border-radius: 10px;
+  padding: 20px;
+  width: 95%;
+  max-width: 900px;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: var(--dnd-text, #d7d9e0);
+}
+.action-modal h3 {
+  margin-top: 0;
+}
+.action-modal-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+/* Inputs/selects have their own padding+border, which a plain header
+   <span> doesn't - without border-box, an element given the same CSS
+   "width" as its header label still renders physically wider, and the
+   mismatch compounds across columns. Forcing border-box on every
+   classed field here makes "width" mean the same thing as it does for
+   the header spans above them. */
+.action-modal-row input,
+.action-modal-row select,
+.action-modal-header-row span {
+  box-sizing: border-box;
+}
+.action-modal-actions .action-modal-row input,
+.action-modal-actions .action-modal-row select {
+  text-align: left !important;
+  padding-left: 0 !important;
+}
+.action-modal-actions .action-modal-row .action-modal-category,
+.action-modal-actions .action-modal-row .action-modal-restselect,
+.action-modal-actions .action-modal-row .action-modal-narrow,
+.action-modal-actions .action-modal-row .action-modal-stat {
+  text-align: center !important;
+  padding-left: 0 !important;
+}
+.action-modal-actions .action-modal-row select.action-modal-category,
+.action-modal-actions .action-modal-row select.action-modal-restselect {
+  text-align-last: center !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  padding-right: 0 !important;
+}
+.action-modal-actions .action-modal-row .action-modal-category option,
+.action-modal-actions .action-modal-row .action-modal-restselect option {
+  text-align: center;
+}
+.action-modal-row input[type="text"]:not(.action-modal-narrow):not(.action-modal-name):not(.action-modal-range):not(.action-modal-stat):not(.action-modal-dmg):not(.action-modal-dmgtype):not(.feature-name-input) {
+  flex: 1 1 auto !important;
+  min-width: 120px !important;
+}
+.action-modal-row .action-modal-narrow {
+  flex: 0 0 36px !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+}
+.action-modal-row .action-modal-name {
+  flex: 1 1 auto !important;
+  width: 221px !important;
+  min-width: 153px !important;
+}
+/* Narrower variant for the Update Character Sheet modal's left column
+   (Overview / Special Senses / Combat Values / Hit Points) - scoped to
+   .modal-col so it doesn't affect the Actions/Inventory modals, which
+   share this same .action-modal-name class for their (wider) Name field */
+.modal-col .action-modal-row .action-modal-name {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+  min-width: 100px !important;
+  max-width: 130px !important;
+}
+.action-modal-row .action-modal-range {
+  flex: 0 0 90px !important;
+  width: 90px !important;
+}
+.action-modal-row .action-modal-stat {
+  flex: 0 0 58px !important;
+  width: 58px !important;
+}
+.action-modal-row .action-modal-dmg {
+  flex: 0 0 75px !important;
+  width: 75px !important;
+}
+.action-modal-actions .action-modal-row input.action-modal-dmg {
+  padding-left: 2px !important;
+  padding-right: 10px !important;
+}
+.action-modal-row .action-modal-dmgtype {
+  flex: 0 0 90px !important;
+  width: 90px !important;
+}
+.action-modal-row .action-modal-category {
+  flex: 0 0 auto !important;
+  width: 130px !important;
+}
+.action-modal-row .action-modal-restselect {
+  flex: 0 0 auto !important;
+  width: 85px !important;
+}
+/* Header row above the action rows, echoing the Actions tab's own
+   table-header look (small, dim, uppercase). Uses the same width
+   classes as the inputs below it so columns line up. */
+.action-modal-header-row {
+  font-weight: 600;
+  font-size: 0.68em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  border-bottom: 2px solid var(--dnd-border);
+  padding-bottom: 6px;
+  margin-bottom: 4px !important;
+}
+.action-modal-header-row span {
+  text-align: center;
+  padding-left: 0;
+}
+.action-modal-header-spacer {
+  flex: 0 0 35px !important;
+  width: 35px !important;
+}
+/* Actions modal only: keep each action on a single row instead of
+   wrapping. Scoped to .action-modal-actions so Inventory/Features/the
+   Update Character Sheet modal (which share .action-modal-row) keep
+   their normal wrapping behavior. */
+.action-modal-actions .action-modal-row {
+  flex-wrap: nowrap;
+}
+.action-modal-actions {
+  overflow-x: auto;
+}
+/* "Uses" needs a touch more room than the 36px .action-modal-narrow
+   gives elsewhere (Inventory's Weight/Qty/Cost, Senses, Features) -
+   scoped so those other modals keep their original narrower width. */
+.action-modal-actions .action-modal-row .action-modal-narrow {
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
+}
+.action-modal-header-row span {
+  white-space: nowrap;
+}
+.action-modal-label {
+  font-size: 0.75em;
+  color: var(--dnd-dim);
+  white-space: nowrap;
+}
+.action-modal-btnrow {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== Spell level group headers, inside the DataviewJS output ===== */
+.dnd-sheet .feature-name {
+  color: var(--dnd-accent);
+  font-weight: 600;
+  margin-top: 14px;
+}
+.dnd-sheet .feature-entry:first-child .feature-name {
+  margin-top: 0;
+}
+.dnd-sheet .feature-description {
+  font-size: 0.92em;
+  color: var(--dnd-text);
+  margin-top: 2px;
+  white-space: pre-wrap;
+}
+.feature-desc-block {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  margin-bottom: 8px;
+}
+.feature-desc-block .action-modal-label {
+  display: block;
+  margin-bottom: 4px;
+}
+.feature-desc-textarea {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 80px;
+  box-sizing: border-box !important;
+  background: var(--background-modifier-form-field, #0d0e12);
+  border: 1px solid var(--background-modifier-border, #2a2e3a);
+  border-radius: 6px;
+  color: var(--dnd-text);
+  font-family: inherit;
+  font-size: 0.9em;
+  padding: 6px 8px !important;
+  resize: vertical;
+  margin: 4px 0 10px 0;
+}
+
+.dnd-sheet .player-notes-textarea {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 260px;
+  box-sizing: border-box !important;
+  background: var(--background-modifier-form-field, #0d0e12);
+  border: 1px solid var(--background-modifier-border, #2a2e3a);
+  border-radius: 6px;
+  color: var(--dnd-text);
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.5;
+  padding: 10px 12px;
+  resize: vertical;
+  margin: 0 0 10px 0;
+}
+
+/* Add/Edit Feature modals: dedicated width, separate from the other
+   modals which share .action-modal / .action-modal-name */
+.action-modal-feature {
+  max-width: 565px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.feature-name-input {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+  box-sizing: border-box;
+}
+
+.dnd-sheet .spell-level-header {
+  font-family: 'Bitter', serif;
+  color: var(--dnd-accent);
+  font-size: 1.25em;
+  border-bottom: 1px solid var(--dnd-border);
+  padding-bottom: 4px;
+  margin-top: 16px;
+  margin-bottom: 4px;
+}
+.dnd-sheet .spell-level-header:first-child {
+  margin-top: 0;
+}
+
+/* ===== Spell slot checkboxes (JS-rendered, frontmatter-backed) ===== */
+.dnd-sheet .spell-slots-title {
+  font-weight: 600;
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  margin-bottom: 8px;
+}
+.dnd-sheet .spell-slots-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.dnd-sheet .spell-slots-row .spell-slots-label {
+  font-weight: 600;
+  min-width: 70px;
+  color: var(--dnd-text);
+}
+
+/* ===== Heroic Inspiration + Death Saves (Hit Points box) ===== */
+.dnd-sheet .hp-extra-label {
+  font-weight: 600;
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  margin-top: 12px;
+}
+.dnd-sheet .hp-extra-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.dnd-sheet .death-saves-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.dnd-sheet .death-saves-icon {
+  font-weight: 700;
+  margin: 0 2px;
+}
+.dnd-sheet .death-saves-fail-icon {
+  color: #e05a5a;
+}
+.dnd-sheet .death-saves-success-icon {
+  color: #5ac97a;
+  margin-left: 10px;
+}
+
+/* ===== Add Spell form ===== */
+.dnd-sheet .add-spell-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.dnd-sheet .spell-add-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Marks a spell row as a computed/duplicate upcast entry rather than
+   the spell's natural level */
+.dnd-sheet .spell-upcast-tag {
+  font-size: 0.72em;
+  color: var(--dnd-dim);
+  font-style: italic;
+}
+
+/* ===== Spell rows - same visual language as Action rows, narrowed
+   to match D&D Beyond's own Time/Range/Hit-DC/Effect column set ===== */
+.dnd-sheet .spell-row {
+  display: grid;
+  grid-template-columns: 1.6fr 46px 85px 65px 1.4fr 18px;
+  align-items: center;
+  column-gap: 6px;
+  border-bottom: 1px solid var(--dnd-border);
+  padding: 5px 2px;
+}
+.dnd-sheet .spell-row-header {
+  font-weight: 600;
+  font-size: 0.68em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  border-bottom: 2px solid var(--dnd-border);
+  padding-bottom: 6px;
+}
+.dnd-sheet .spell-row-header span {
+  text-align: right;
+}
+.dnd-sheet .spell-row-header span:first-child {
+  text-align: left;
+}
+.dnd-sheet .spell-row-header span:nth-child(2),
+.dnd-sheet .spell-row-header span:nth-child(3),
+.dnd-sheet .spell-row-header span:nth-child(4) {
+  text-align: center;
+}
+.dnd-sheet .spell-row-header span:nth-child(4) {
+  margin-left: 10px;
+}
+.dnd-sheet .spell-row > *:nth-child(2),
+.dnd-sheet .spell-row > *:nth-child(3),
+.dnd-sheet .spell-row > *:nth-child(4) {
+  text-align: center;
+}
+.dnd-sheet .spell-row > *:nth-child(4) {
+  margin-left: 10px;
+}
+
+/* ===== Inventory rows - same pattern, 4 data columns ===== */
+.dnd-sheet .inventory-row {
+  display: grid;
+  grid-template-columns: 1fr 70px 50px 70px 18px;
+  align-items: center;
+  column-gap: 8px;
+  border-bottom: 1px solid var(--dnd-border);
+  padding: 6px 2px;
+}
+.dnd-sheet .inventory-row-header {
+  font-weight: 600;
+  font-size: 0.68em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  border-bottom: 2px solid var(--dnd-border);
+  padding-bottom: 6px;
+}
+.dnd-sheet .inventory-row-header span {
+  text-align: right;
+}
+.dnd-sheet .inventory-row-header span:first-child {
+  text-align: left;
+}
+
+/* ===== Limited-Use Features tracker (Features tab) - reuses the
+   spell-slots-row layout, just with a rest-type badge and a remove
+   button added at the end of each row ===== */
+.dnd-sheet .feature-row {
+  gap: 8px;
+}
+
+/* Uses sub-row nested under an action card - pulled up against it and
+   indented so it reads as "belonging to" the row above, not a peer */
+.dnd-sheet .action-uses-row {
+  margin-top: -4px;
+  margin-bottom: 8px;
+  padding-left: 14px;
+  font-size: 0.85em;
+}
+.dnd-sheet .action-uses-row .spell-slots-label {
+  min-width: 40px;
+  color: var(--dnd-dim);
+  font-weight: 400;
+}
+.dnd-sheet .feature-rest-badge {
+  margin-left: auto;
+  font-size: 0.68em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  border: 1px solid var(--dnd-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ===== Conditions & Exhaustion ===== */
+.dnd-sheet .condition-desc {
+  font-size: 0.78em;
+  color: var(--dnd-dim);
+  flex: 1;
+}
+/* DEAD swaps into the exact spot the HP number occupies, same size
+   and weight, controlled by the same "dead" cssclasses toggle used
+   for the whole-sheet dim effect */
+.dnd-sheet .dead-hp-text {
+  display: none;
+  font-size: 2.3em;
+  font-weight: 700;
+  text-align: center;
+  color: #e05a5a;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+.dnd-sheet.dead .hp-big {
+  display: none;
+}
+.dnd-sheet.dead .dead-hp-text {
+  display: block;
+}
+
+/* Whole-sheet dim, triggered by exhaustion level 6 (cssclasses gets
+   a "dead" class added alongside dnd-sheet/tab-*) */
+.dnd-sheet.dead {
+  filter: grayscale(0.85) brightness(0.55);
+}
+
+/* "Dying" state (0 HP, still alive - rolling death saves): dims every
+   box EXCEPT Hit Points and Conditions (Unconscious gets auto-applied
+   there, so it needs to stay legible). This must be an explicit
+   include-list, not ":not([data-callout='hp'])" - the [!row] wrapper
+   that contains Overview/Combat/HP together also matches "not hp",
+   and since it's an ANCESTOR of the hp callout, dimming it would
+   composite-dim HP anyway regardless of HP's own exclusion. Only
+   listing the actual leaf content callouts (never row/colstack
+   wrappers) avoids that. */
+.dnd-sheet.dying .callout[data-callout="charinfo"],
+.dnd-sheet.dying .callout[data-callout="combat"],
+.dnd-sheet.dying .callout[data-callout="ministat"],
+.dnd-sheet.dying .callout[data-callout="stat"],
+.dnd-sheet.dying .callout[data-callout="defenses"],
+.dnd-sheet.dying .callout[data-callout="saves"],
+.dnd-sheet.dying .callout[data-callout="senses"],
+.dnd-sheet.dying .callout[data-callout="profbonus"],
+.dnd-sheet.dying .callout[data-callout="lifeevents"],
+.dnd-sheet.dying .callout[data-callout="goals"],
+.dnd-sheet.dying .callout[data-callout="skills"],
+.dnd-sheet.dying .callout[data-callout="details"] {
+  filter: grayscale(0.5) brightness(0.65);
+}
+.dnd-sheet.dying h1,
+.dnd-sheet.dying hr {
+  filter: grayscale(0.5) brightness(0.65);
+}
+
+/* ===== Defense chips (Resistances/Immunities/Vulnerabilities) ===== */
+.dnd-sheet .defense-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--dnd-bg);
+  border: 1px solid var(--dnd-border);
+  border-radius: 10px;
+  padding: 1px 6px 1px 8px;
+  margin: 2px 4px 2px 0;
+  color: var(--dnd-text);
+}
+.dnd-sheet .defense-chip .action-btn {
+  width: 14px;
+  height: 14px;
+  font-size: 0.7em;
+}
+
+/* ===== Saves / Senses / Skills rows (DataviewJS-driven) ===== */
+.dnd-sheet .stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 2px;
+  font-size: 0.92em;
+}
+.dnd-sheet .stat-dot {
+  width: 14px;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--dnd-dim);
+}
+.dnd-sheet .stat-ability {
+  width: 32px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--dnd-dim);
+}
+.dnd-sheet .stat-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--dnd-text);
+}
+.dnd-sheet .stat-value {
+  font-weight: 700;
+  min-width: 30px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-align: right;
+  color: var(--dnd-text);
+}
+/* ===== Saving Throws: two-column layout (STR/DEX/CON | INT/WIS/CHA),
+   with larger value text. Scoped to [!saves] only, since .stat-row/
+   .stat-value are shared with Senses and Skills, which should keep
+   their normal single-column size. ===== */
+.dnd-sheet .callout[data-callout="saves"] .saves-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+}
+.dnd-sheet .callout[data-callout="saves"] .stat-row {
+  gap: 4px;
+  padding: 4px 0;
+}
+.dnd-sheet .callout[data-callout="saves"] .stat-dot {
+  width: 10px;
+}
+.dnd-sheet .callout[data-callout="saves"] .stat-ability {
+  width: 40px;
+  font-size: 1.5em;
+}
+.dnd-sheet .callout[data-callout="saves"] .stat-value {
+  font-size: 2em;
+  min-width: 34px;
+  margin-left: 12px;
+}
+.dnd-sheet .callout[data-callout="senses"] .special-senses {
+  margin-top: 10px;
+}
+.dnd-sheet .stat-subheader {
+  font-weight: 600;
+  font-size: 0.72em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dnd-dim);
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+.dnd-sheet .stat-subheader:first-child {
+  margin-top: 0;
+}
+/* Bigger separation between sections specifically inside the Update
+   Character Sheet modal - the main-sheet Saves/Skills boxes keep the
+   tighter default above */
+.action-modal .stat-subheader {
+  margin-top: 24px;
+}
+.action-modal .stat-subheader:first-child {
+  margin-top: 0;
+}
+
+/* ===== Update Character Sheet modal: wider, two-column layout ===== */
+.action-modal-wide {
+  max-width: 720px !important;
+}
+.modal-columns {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.modal-col {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.modal-columns > .modal-col:first-child {
+  flex: 0 1 300px;
+  max-width: 300px;
+}
+.modal-columns > .modal-col:nth-child(2) {
+  flex: 0 1 320px;
+  max-width: 320px;
+}
+
+.checklist-box {
+  display: flex;
+  flex-direction: column;
+  max-height: 130px;
+  overflow-y: auto;
+  gap: 2px;
+  flex: 1 1 auto;
+  border: 1px solid var(--dnd-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: var(--dnd-bg, #14161d);
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85em;
+  color: var(--dnd-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.checklist-item input[type="checkbox"] {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Grid-aligned Saving Throws / Skills rows inside the modal - every
+   row shares the same column template, so STR/DEX/etc, skill names,
+   checkboxes, and values all line up vertically */
+.save-edit-row {
+  display: grid;
+  grid-template-columns: 40px 24px 60px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.ability-edit-row {
+  display: grid;
+  grid-template-columns: 40px 55px 55px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.ability-edit-row .condition-desc {
+  font-weight: 700;
+  color: var(--dnd-text);
+  text-align: center;
+}
+.skill-edit-row {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 130px) 24px 60px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.save-edit-row input[type="text"],
+.ability-edit-row input[type="text"],
+.skill-edit-row input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Custom callout types had no explicit --callout-color, so they fell back
+   to Obsidian's default (blue) instead of the sheet's red accent theme.
+   Excluding colstack/column/row - those are invisible layout wrappers
+   (confirmed by the original file's own comments) and should never carry
+   a visible accent color at all. */
+.dnd-sheet .callout[data-callout="charinfo"],
+.dnd-sheet .callout[data-callout="combat"],
+.dnd-sheet .callout[data-callout="conditions"],
+.dnd-sheet .callout[data-callout="defenses"],
+.dnd-sheet .callout[data-callout="details"],
+.dnd-sheet .callout[data-callout="hp"],
+.dnd-sheet .callout[data-callout="ministat"],
+.dnd-sheet .callout[data-callout="profbonus"],
+.dnd-sheet .callout[data-callout="saves"],
+.dnd-sheet .callout[data-callout="senses"],
+.dnd-sheet .callout[data-callout="skills"],
+.dnd-sheet .callout[data-callout="stat"] {
+  --callout-color: 192, 90, 74;
+}
+.dnd-sheet .callout[data-callout="colstack"],
+.dnd-sheet .callout[data-callout="column"],
+.dnd-sheet .callout[data-callout="row"] {
+  --callout-color: transparent;
+}
+
+/* Simple, broad approach: remove the border/shadow/outline on every
+   callout inside the sheet at once, rather than listing individual types -
+   catches everything (Skills, Saving Throws, Senses, Character Details,
+   etc.) without needing to enumerate each one by name. Also explicitly
+   targeting .callout-title, since removing the outer callout's border
+   revealed a separate border on the title row that was previously
+   overlapping/hidden behind it. */
+.dnd-sheet .callout,
+.dnd-sheet .callout-title,
+.dnd-sheet .callout-title-inner,
+.dnd-sheet .callout-content {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* [!column] wrapping DĚJOVÁ LINIE / HISTORIE: was still getting the
+   flat dnd-sheet card background/padding behind the two buttons -
+   make it an invisible layout wrapper like [!row]/[!colstack]. */
+.dnd-sheet .callout[data-callout="column"] {
+  background: transparent;
+  padding: 0;
+}
+
+/* Backstory quote box + all the main sheet cards: keep the drop shadow
+   that Callouts.css's quote-callout skin gives [!quote] by default,
+   applied here to every card on the sheet for a consistent look -
+   stripped by the blanket border/shadow-removal rule above. */
+.dnd-sheet .callout[data-callout="quote"],
+.dnd-sheet .callout[data-callout="charinfo"],
+.dnd-sheet .callout[data-callout="combat"],
+.dnd-sheet .callout[data-callout="hp"],
+.dnd-sheet .callout[data-callout="defenses"],
+.dnd-sheet .callout[data-callout="conditions"],
+.dnd-sheet .callout[data-callout="stat"],
+.dnd-sheet .callout[data-callout="saves"],
+.dnd-sheet .callout[data-callout="senses"],
+.dnd-sheet .callout[data-callout="profbonus"],
+.dnd-sheet .callout[data-callout="skills"],
+.dnd-sheet .callout[data-callout="details"] {
+  box-shadow: var(--shadow-l) !important;
+}
+/* Quote box keeps its side brackets - only the 11 sheet cards above
+   had theirs removed. */
+.dnd-sheet .callout[data-callout="quote"] {
+  border-left: 4px solid white !important;
+  border-right: 4px solid white !important;
+}
+
+/* ===== DĚJOVÁ LINIE / HISTORIE buttons: these are just [!important]
+   and [!note] callouts, which already have a nice "button" look
+   (border, icon, fold-chevron, mint/grey color) from the Prism-callout
+   block in Callouts.css - the blanket rules above strip that from
+   every callout in the sheet. Exempt just these two types so their
+   native look comes back instead of the flat dnd-sheet card. */
+.dnd-sheet .callout[data-callout="important"],
+.dnd-sheet .callout[data-callout="note"] {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+.dnd-sheet .callout[data-callout="important"] .callout-icon,
+.dnd-sheet .callout[data-callout="important"] .callout-fold,
+.dnd-sheet .callout[data-callout="note"] .callout-icon,
+.dnd-sheet .callout[data-callout="note"] .callout-fold {
+  display: flex !important;
+}
+.dnd-sheet .callout[data-callout="important"] > .callout-title,
+.dnd-sheet .callout[data-callout="note"] > .callout-title {
+  border: 2px solid !important;
+  box-shadow: none !important;
+}
+.dnd-sheet .callout[data-callout="important"] > .callout-title {
+  border-color: var(--color-mint-tint) !important;
+}
+/* "note"'s default grey fill/border (from Callouts.css's theme-dark
+   values) is nearly the same darkness as the dnd-sheet card background
+   and disappears - give it its own visible tint instead. */
+.dnd-sheet .callout[data-callout="note"] > .callout-title {
+  background-color: rgba(215, 217, 224, 0.07) !important;
+  border-color: rgba(215, 217, 224, 0.35) !important;
+  color: var(--dnd-dim) !important;
+}
+.dnd-sheet .callout[data-callout="note"] > .callout-title .callout-icon,
+.dnd-sheet .callout[data-callout="note"] > .callout-title .callout-icon .svg-icon {
+  color: var(--dnd-dim) !important;
+}

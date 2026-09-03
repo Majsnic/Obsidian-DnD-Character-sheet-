@@ -41,7 +41,7 @@ const aligment = result.Aligment || "";
 const player = result.Player || "";
 const race = result.Race || "";
 const dndbeyond = (result.DnDBeyond && typeof result.DnDBeyond === "object" ? result.DnDBeyond.value : result.DnDBeyond) || "";
-const portrait = result.Portrait.value || "/Kompendium/XZ. Pictures/player.png";
+const portrait = result.Portrait.value || "";
 const quote = result.Quote || "";
 const backstory = result.Backstory || "";
 const pClass = result.pClass.value?.length ? result.pClass.value : [];
@@ -65,7 +65,7 @@ await moveAndOpenFile(tp, name);
 // may not be ready yet - wait for the note's element to actually exist
 // before trying to set its icon, rather than assuming it's there.
 const iconize = app.plugins.plugins["obsidian-icon-folder"];
-const notePath = `Dungeons & Dragons/01. Kampaň/2. Hráči/${name}.md`;
+const notePath = `Characters/${name}.md`;
 for (let i = 0; i < 25; i++) {
   if (document.querySelector(`[data-path="${notePath}"]`)) break;
   await new Promise(r => setTimeout(r, 200));
@@ -2013,7 +2013,7 @@ death_saves_fail:
 > <% quote %>
 
 > [!column|flex 2]
->> [!important]- DĚJOVÁ LINIE:
+>> [!important]- STORY LINE:
 >> ```base
 >> properties:
 >>   file.name:
@@ -2023,13 +2023,13 @@ death_saves_fail:
 >>     name: Name
 >>     filters:
 >>       and:
->>         - file.inFolder("Dungeons & Dragons/01. Kampaň/2. Hráči/Úkoly")
+>>         - file.inFolder("Quests")
 >>         - file.hasLink(this.file)
 >>     order:
 >>       - file.name
 >> ```
 >
->> [!note]- HISTORIE
+>> [!note]- HISTORY
 >> ```base
 >> properties:
 >>   file.name:
@@ -2039,7 +2039,7 @@ death_saves_fail:
 >>     name: Session Notes
 >>     filters:
 >>       and:
->>         - file.inFolder("Dungeons & Dragons/01. Kampaň/1. Master Plan/Deník")
+>>         - file.inFolder("Session Notes")
 >>         - file.hasLink(this.file)
 >> ```
 
@@ -2056,8 +2056,8 @@ death_saves_fail:
 
 - 
 
-# Cíle
+# Goals
 - 
 
-# Plány DM
+# DM Plans
 - 

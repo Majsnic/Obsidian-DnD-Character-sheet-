@@ -791,10 +791,10 @@ death_saves_fail:
 >>> const baseMatch = String(page.base_speed || "0 ft.").match(/(\d+)/);
 >>> const baseNum = baseMatch ? Number(baseMatch[1]) : 0;
 >>> const exhaustion = Number(page.exhaustion_level || 0);
->>> const effective = isZeroed ? 0 : (exhaustion >= 6 ? 0 : Math.max(0, baseNum - 5 * exhaustion));
+>>> const effective = isZeroed ? 0 : Math.max(0, baseNum - 5 * exhaustion);
 >>> dv.container.createEl("span", {cls: "ministat-value", text: `${effective} ft.`});
 >>> if (effective !== baseNum) {
->>>   const note = isZeroed ? "reduced by condition" : (exhaustion >= 6 ? "speed 0 - Exhaustion 6" : `-${baseNum - effective} ft. exhaustion`);
+>>>   const note = isZeroed ? "reduced by condition" : `-${baseNum - effective} ft. exhaustion`;
 >>>   dv.container.createEl("div", {cls: "condition-desc", text: note});
 >>> }
 >>> ```
@@ -2115,7 +2115,7 @@ death_saves_fail:
 > A short, evocative line capturing who this character is.
 
 > [!column|flex 2]
->> [!important]- DĚJOVÁ LINIE:
+>> [!important]- STORY LINE:
 >> ```base
 >> properties:
 >>   file.name:
@@ -2125,13 +2125,13 @@ death_saves_fail:
 >>     name: Name
 >>     filters:
 >>       and:
->>         - file.inFolder("Dungeons & Dragons/01. Kampaň/2. Hráči/Úkoly")
+>>         - file.inFolder("Quests")
 >>         - file.hasLink(this.file)
 >>     order:
 >>       - file.name
 >> ```
 >
->> [!note]- HISTORIE
+>> [!note]- HISTORY
 >> ```base
 >> properties:
 >>   file.name:
@@ -2141,7 +2141,7 @@ death_saves_fail:
 >>     name: Session Notes
 >>     filters:
 >>       and:
->>         - file.inFolder("Dungeons & Dragons/01. Kampaň/1. Master Plan/Deník")
+>>         - file.inFolder("Session Notes")
 >>         - file.hasLink(this.file)
 >> ```
 
@@ -2156,8 +2156,8 @@ Write the character's backstory here.
 
 - 
 
-# Cíle
+# Goals
 - 
 
-# Plány DM
+# DM Plans
 - 

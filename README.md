@@ -108,6 +108,3 @@ Warlock's Pact Magic is always calculated on its own from Warlock level alone, a
 - Background stays a free-text field, matching the creation form.
 - Third-caster detection (Eldritch Knight, Arcane Trickster) is based on subclass name matching. Other homebrew third-caster subclasses would need to be added to the `THIRD_CASTER_SUBCLASSES` list in both `character-sheet-template.md` and `PLAYER.md`.
 
-## License
-
-*(add your preferred license here)*

@@ -1,0 +1,385 @@
+{
+  "title": "Add New Player",
+  "name": "PC",
+  "customClassname": "",
+  "fields": [
+    {
+      "name": "Portrait",
+      "label": "Portrét:",
+      "description": "",
+      "isRequired": false,
+      "input": {
+        "type": "image",
+        "filenameTemplate": "PARTY-{{time}}",
+        "saveLocation": "Portraits"
+      }
+    },
+    {
+      "name": "Name",
+      "label": "Jméno postavy:",
+      "description": "",
+      "isRequired": true,
+      "input": {
+        "type": "text",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Player",
+      "label": "Jméno hráče:",
+      "description": "Tomáš, Pavel, Hanka....",
+      "isRequired": false,
+      "input": {
+        "type": "text",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Level",
+      "label": "Level:",
+      "description": "",
+      "isRequired": false,
+      "input": {
+        "type": "text",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Race",
+      "label": "Rasa:",
+      "description": "",
+      "isRequired": false,
+      "input": {
+        "type": "dataview",
+        "query": "['Aarakocra','Aasimar','Bugbear','Centaur','Changeling','Dragonborn','Dwarf','Elf','Fairy','Firbolg','Genasi','Gnome','Goblin','Goliath','Grung','Halfling','Half-Elf','Half-Orc','Hobgoblin','Human','Kalashtar','Kenku','Kobold','Leonin','Lizardfolk','Loxodon','Minotaur','Orc','Owlfolk','Satyr','Shifter','Simic Hybrid','Tabaxi','Tiefling','Tortle','Triton','Vedalken','Verdan','Warforged','Yuan-Ti Pureblood']"
+      }
+    },
+    {
+      "name": "pClass",
+      "label": "Kategorie:",
+      "description": "Class",
+      "isRequired": false,
+      "input": {
+        "type": "multiselect",
+        "source": "fixed",
+        "multi_select_options": [
+          "Artificer",
+          "Barbarian",
+          "Bard",
+          "Cleric",
+          "Druid",
+          "Fighter",
+          "Monk",
+          "Paladin",
+          "Ranger",
+          "Rogue",
+          "Sorcerer",
+          "Warlock",
+          "Wizard"
+        ],
+        "allowUnknownValues": true
+      }
+    },
+    {
+      "name": "Beyond_check",
+      "label": "Má postava char. sheet na DnDBeyond?",
+      "description": "",
+      "isRequired": false,
+      "input": {
+        "type": "toggle",
+        "hidden": false
+      }
+    },
+    {
+      "name": "DnDBeyond",
+      "label": "DnDBeyond link:",
+      "description": "Postava musí být nastavena jako \"Public\" aby share link fungoval",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "Beyond_check",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "text",
+        "hidden": false
+      }
+    },
+    {
+      "name": "shortened",
+      "label": "Kompletní tvorba postavy?",
+      "description": "Vyplníte celý character sheet, když nezapnete doplníte si veškeré informace později ručně. Dobré pro zrychlenou tvorbu, character sheet se nastaví na základní hodnoty.",
+      "isRequired": false,
+      "input": {
+        "type": "toggle",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Initiative",
+      "label": "Iniciativa:",
+      "description": "Write bonuses without + or -",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "HP",
+      "label": "Nynější HP:",
+      "description": "Nynější HP",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Max_HP",
+      "label": "Maximum HP:",
+      "description": "Maximální HP",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "AC",
+      "label": "AC:",
+      "description": "",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "STR",
+      "label": "Strenght:",
+      "description": "STR: 10",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "DEX",
+      "label": "Dexterity:",
+      "description": "DEX: 10",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "CON",
+      "label": "Dexterity:",
+      "description": "CON: 10",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "INT",
+      "label": "Inteligence:",
+      "description": "INT: 10",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "WIS",
+      "label": "Wisdom:",
+      "description": "WIS: 10",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "CHA",
+      "label": "Charisma:",
+      "description": "CHA: 10",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "number",
+        "hidden": false
+      }
+    },
+    {
+      "name": "subClass",
+      "label": "Podkategorie:",
+      "description": "Subclass",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "multiselect",
+        "source": "dataview",
+        "query": "(() => {\n  const map = {\n    \"Artificer\": [\"Alchemist\",\"Armorer\",\"Artillerist\",\"Battle Smith\"],\n    \"Barbarian\": [\"Ancestral Guardian\",\"Battlerager\",\"Berserker\",\"Storm Herald\",\"Totem Warrior\",\"Zealot\"],\n    \"Bard\": [\"College of Creation\",\"College of Eloquence\",\"College of Glamour\",\"College of Lore\",\"College of Swords\",\"College of Valor\",\"College of Whispers\"],\n    \"Cleric\": [\"Arcana Domain\",\"Death Domain\",\"Forge Domain\",\"Grave Domain\",\"Knowledge Domain\",\"Life Domain\",\"Light Domain\",\"Nature Domain\",\"Order Domain\",\"Peace Domain\",\"Tempest Domain\",\"Trickery Domain\",\"Twilight Domain\",\"War Domain\"],\n    \"Druid\": [\"Circle of Dreams\",\"Circle of Spores\",\"Circle of Stars\",\"Circle of the Land\",\"Circle of the Moon\",\"Circle of the Shepherd\",\"Circle of Wildfire\"],\n    \"Fighter\": [\"Arcane Archer\",\"Battle Master\",\"Cavalier\",\"Champion\",\"Echo Knight\",\"Eldritch Knight\",\"Psi Warrior\",\"Purple Dragon Knight\",\"Rune Knight\",\"Samurai\"],\n    \"Monk\": [\"Drunken Master\",\"Four Elements\",\"Kensei\",\"Long Death\",\"Mercy\",\"Open Hand\",\"Shadow\",\"Sun Soul\"],\n    \"Paladin\": [\"Ancients\",\"Conquest\",\"Crown\",\"Devotion\",\"Glory\",\"Oathbreaker\",\"Redemption\",\"Vengeance\",\"Watchers\"],\n    \"Ranger\": [\"Beast Master\",\"Fey Wanderer\",\"Gloom Stalker\",\"Horizon Walker\",\"Hunter\",\"Monster Slayer\",\"Swarmkeeper\"],\n    \"Rogue\": [\"Arcane Trickster\",\"Assassin\",\"Inquisitive\",\"Mastermind\",\"Phantom\",\"Scout\",\"Soulknife\",\"Swashbuckler\",\"Thief\"],\n    \"Sorcerer\": [\"Aberrant Mind\",\"Clockwork Soul\",\"Divine Soul\",\"Draconic Bloodline\",\"Shadow Magic\",\"Storm Sorcery\",\"Wild Magic\"],\n    \"Warlock\": [\"Archfey\",\"Celestial\",\"Fathomless\",\"Fiend\",\"Genie\",\"Great Old One\",\"Hexblade\",\"Undead\",\"Undying\"],\n    \"Wizard\": [\"Bladesinging\",\"Chronurgy\",\"Graviturgy\",\"Lore Mastery\",\"Order of Scribes\",\"School of Abjuration\",\"School of Conjuration\",\"School of Divination\",\"School of Enchantment\",\"School of Evocation\",\"School of Illusion\",\"School of Necromancy\",\"School of Transmutation\",\"War Magic\"]\n  };\n  const raw = (form && form.pClass && form.pClass.value) || (form && form.pClass) || [];\n  const selected = Array.isArray(raw) ? raw : [];\n  if (!selected.length) {\n    return Object.values(map).flat();\n  }\n  return selected.flatMap(c => map[c] || []);\n})()",
+        "allowUnknownValues": true
+      }
+    },
+    {
+      "name": "Background",
+      "label": "Background:",
+      "description": "",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "text",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Aligment",
+      "label": "Aligment:",
+      "description": "",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "select",
+        "source": "fixed",
+        "options": [
+          {
+            "value": "Lawfull Good",
+            "label": "Lawfull Good"
+          },
+          {
+            "value": "Neutral Good",
+            "label": "Neutral Good"
+          },
+          {
+            "value": "Chaotic Good",
+            "label": "Chaotic Good"
+          },
+          {
+            "value": "Lawfull Neutral",
+            "label": "Lawfull Neutral"
+          },
+          {
+            "value": "True Neutral",
+            "label": "True Neutral"
+          },
+          {
+            "value": "Chaotic Neutral",
+            "label": "Chaotic Neutral"
+          },
+          {
+            "value": "Lawfull Evil",
+            "label": "Lawfull Evil"
+          },
+          {
+            "value": "Neutral Evil",
+            "label": "Neutral Evil"
+          },
+          {
+            "value": "Chaotic Evil",
+            "label": "Chaotic Evil"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Quote",
+      "label": "Popis:",
+      "description": "Krátký popis postavy či věta např.: \"Ochraním vše živé před nebezpečím!\"",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "textarea",
+        "hidden": false
+      }
+    },
+    {
+      "name": "Backstory",
+      "label": "Backstory:",
+      "description": "",
+      "isRequired": false,
+      "condition": {
+        "dependencyName": "shortened",
+        "type": "boolean",
+        "value": true
+      },
+      "input": {
+        "type": "textarea",
+        "hidden": false
+      }
+    }
+  ],
+  "version": "1"
+}

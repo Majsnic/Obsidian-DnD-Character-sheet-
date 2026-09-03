@@ -1,272 +1,175 @@
+<%*
+const { toCamelCase, moveAndOpenFile, yamlList } = tp.user.utils;
+
+// Open modal form for player character creation
+const result = await MF.openForm('PC', {
+  values: {
+    Quote: "A short, evocative line capturing who this character is.",
+    Backstory: "Write the character's backstory here."
+  }
+});
+
+// Cancel if form was closed without submission
+if (result.status !== 'ok') {
+  new Notice().noticeEl.innerHTML = `<span style="color: red; font-weight: bold;">Cancelled:</span><br>Player character has not been added`;
+    return;
+}
+
+// Declare & normalize variables
+const name = result.Name.value;
+// Modal Forms can return the literal string "null" for an empty number
+// field, which `|| default` doesn't catch (non-empty strings are truthy).
+// This helper explicitly handles every plausible empty shape.
+function numOrDefault(val, def) {
+  const n = Number(val);
+  return (val === undefined || val === null || val === "null" || val === "" || isNaN(n)) ? def : n;
+}
+const level = numOrDefault(result.Level, 1);
+const initiativeNum = numOrDefault(result.Initiative, 0);
+const hp = numOrDefault(result.HP, 10);
+const hp_max = numOrDefault(result.Max_HP, 10);
+const ac = numOrDefault(result.AC, 10);
+const str = numOrDefault(result.STR, 10);
+const dex = numOrDefault(result.DEX, 10);
+const con = numOrDefault(result.CON, 10);
+const int = numOrDefault(result.INT, 10);
+const wis = numOrDefault(result.WIS, 10);
+const cha = numOrDefault(result.CHA, 10);
+const initiative = initiativeNum >= 0 ? `+${initiativeNum}` : `${initiativeNum}`;
+const background = result.Background || "";
+const aligment = result.Aligment || "";
+const player = result.Player || "";
+const race = result.Race || "";
+const dndbeyond = (result.DnDBeyond && typeof result.DnDBeyond === "object" ? result.DnDBeyond.value : result.DnDBeyond) || "";
+const portrait = result.Portrait.value || "";
+const quote = result.Quote || "";
+const backstory = result.Backstory || "";
+const pClass = result.pClass.value?.length ? result.pClass.value : [];
+const subClass = result.subClass.value?.length
+  ? result.subClass.value.map(v => v.replace(/^[^:]+:\s*/, ''))
+  : [];
+const classStr = pClass.length ? pClass.join(" / ") : "";
+const subclassStr = subClass.length ? subClass.join(" / ") : "";
+const tags = [
+  " - Player",
+  ...pClass.map(v => ` - class/${toCamelCase(v)}`),
+  ...subClass.map(v => ` - subclass/${toCamelCase(v)}`),
+  race ? ` - race/${toCamelCase(race)}` : null
+].filter(Boolean).join("\n");
+
+// Rename & open note in new tab
+await moveAndOpenFile(tp, name);
+
+// Apply icon to note. On the very first run after this template file
+// changes, something (Iconize's own init, or the file explorer's DOM)
+// may not be ready yet - wait for the note's element to actually exist
+// before trying to set its icon, rather than assuming it's there.
+const iconize = app.plugins.plugins["obsidian-icon-folder"];
+const notePath = `Characters/${name}.md`;
+for (let i = 0; i < 25; i++) {
+  if (document.querySelector(`[data-path="${notePath}"]`)) break;
+  await new Promise(r => setTimeout(r, 200));
+}
+iconize.addFolderIcon(notePath, "FasUser");
+iconize.api.util.dom.createIconNode(iconize, notePath, "FasUser");
+
+// Show success notification
+new Notice().noticeEl.innerHTML = `<span style="color: green; font-weight: bold;">Finished!</span><br>New player character <span style="text-decoration: underline;">${name}</span> added`;
+-%>
 ---
 cssclasses:
   - dnd-sheet
   - tab-actions
-character_name: Template PC
-class: Ranger
-subclass: Gloom Stalker
+character_name: <% name %>
+class: "<% classStr %>"
+subclass: "<% subclassStr %>"
 class_levels: {}
-level: 8
+level: <% level %>
 rules_edition: "2024"
-race: Ice Genasi
-background: Cloistered Scholar
-alignment: Neutral
-player: ""
-cover: player.png
-armor_class: 15
-initiative: "+8"
-str_mod: "+1"
-str_score: 12
-dex_mod: "+4"
-dex_score: 19
-con_mod: "+2"
-con_score: 15
-int_mod: "+2"
-int_score: 15
-wis_mod: "+4"
-wis_score: 18
-cha_mod: "+2"
-cha_score: 14
-special_senses_list:
-  - Darkvision 60 ft.
-spells:
-  - "[[Ray of Frost]]"
-  - "[[Armor of Agathys]]"
-  - "[[Cure Wounds]]"
-  - "[[Disguise Self]]"
-  - "[[Hail of Thorns]]"
-  - "[[Hunter’s Mark]]"
-  - "[[Rime’s Binding Ice]]"
-  - "[[Rope Trick]]"
-hp_current: 61
-hp_max: 69
+race: "<% race %>"
+background: "<% background %>"
+alignment: "<% aligment %>"
+player: "<% player %>"
+cover: "<% portrait %>"
+tags:
+<% tags %>
+armor_class: <% ac %>
+initiative: "<% initiative %>"
+str_mod: "+0"
+str_score: <% str %>
+dex_mod: "+0"
+dex_score: <% dex %>
+con_mod: "+0"
+con_score: <% con %>
+int_mod: "+0"
+int_score: <% int %>
+wis_mod: "+0"
+wis_score: <% wis %>
+cha_mod: "+0"
+cha_score: <% cha %>
+special_senses_list: []
+spells: []
+hp_current: <% hp %>
+hp_max: <% hp_max %>
 temp_hp: 0
 dmg_amount: 0
 temp_hp_input: 0
-actions_list:
-  - name: Dagger
-    type: Action
-    hit: "+7"
-    damage: 1d4+4
-    damage_type: Piercing
-  - name: Longbow
-    type: Action
-    hit: "+9"
-    damage: 1d8+4
-    damage_type: Piercing
-  - name: Shortsword
-    type: Action
-    hit: "+7"
-    damage: 1d6+4
-    damage_type: Piercing
-  - name:
-      - - Ray of Frost
-    type: Action
-    hit: "+3"
-    damage: 2d8
-    damage_type: Cold
-  - name: Unnarmed Strike
-    type: Action
-    hit: "+4"
-    damage: 2
-    damage_type: Bludgeoning
-  - name: Opportunity Attack
-    type: Reaction
-    hit: ""
-    damage: ""
-    max: 0
-    used: 0
-    rest: Short
-  - name: Two-Weapon Fighting
-    type: Bonus Action
-    hit: ""
-    damage: ""
-    max: 0
-    used: 0
-    rest: Short
-  - name: Hail of Thorns
-    type: Bonus Action
-    hit: ""
-    damage: ""
-    max: 0
-    used: 0
-    rest: Short
-  - name: Hunter's Mark
-    type: Bonus Action
-    hit: ""
-    damage: ""
-    max: 0
-    used: 0
-    rest: Short
+actions_list: []
 new_action_name: ""
-new_action_type: Bonus Action
+new_action_type: Action
 new_action_max: 0
 new_action_range: ""
 new_action_rest: Short
 new_action_hit: ""
 new_action_damage: ""
 new_action_damage_type: ""
-inventory_list:
-  - name: Bedroll
-    weight: 7 lb.
-    qty: 1
-    cost: "1"
-  - name: Mess Kit
-    weight: 1 lb.
-    qty: 1
-    cost: "0.2"
-  - name: Rations (1 day)
-    weight: 20 lb.
-    qty: 10
-    cost: "5"
-  - name: Rope, Hempen (50 feet)
-    weight: 10 lb.
-    qty: 1
-    cost: "1"
-  - name: Tinderbox
-    weight: 1 lb.
-    qty: 1
-    cost: "0.5"
-  - name: Torch
-    weight: 10 lb.
-    qty: 10
-    cost: "0.1"
-  - name: Waterskin
-    weight: 5 lb.
-    qty: 1
-    cost: "0.2"
+inventory_list: []
 new_item_name: ""
 new_item_weight: ""
 new_item_qty: ""
 new_item_cost: ""
-limited_uses:
-  - name: Favored Foe
-    description: When you hit a creature with an attack roll, you can mark the target as your favored enemy for 1 minute or until you lose your concentration (as if you were concentrating on a spell). The first time on each of your turns that you hit the favored enemy and deal damage to it, including when you mark it, you can increase that damage by 1d6.
-    max: 3
-    used: 0
-    rest: Long
-  - name: "Fighting Style: Archery"
-    description: You gain a +2 bonus to attack rolls you make with ranged weapons.
-    max: 0
-    used: 0
-    rest: Short
-  - name: Umbral Sight
-    description: You gain darkvision out to a range of 60 ft. (+30 ft. if you already have it). While in darkness, you are invisible to any creature that relies on darkvision to see you in the darkness.
-    max: 0
-    used: 0
-    rest: Short
+limited_uses: []
 conditions_active: []
 player_notes: ""
-base_speed: 35 ft.
-movement_types: Walking, Climbing, Swimming
+base_speed: "30 ft."
+movement_types: Walking
 exhaustion_level: 0
 new_condition_name: ""
 saves_list:
-  - ability: STR
-    mod: "+4"
-    prof: true
-  - ability: DEX
-    mod: "+7"
-    prof: true
-  - ability: CON
-    mod: "+2"
-    prof: false
-  - ability: INT
-    mod: "+2"
-    prof: false
-  - ability: WIS
-    mod: "+7"
-    prof: true
-  - ability: CHA
-    mod: "+2"
-    prof: false
+  - {ability: STR, mod: "+0", prof: false}
+  - {ability: DEX, mod: "+0", prof: false}
+  - {ability: CON, mod: "+0", prof: false}
+  - {ability: INT, mod: "+0", prof: false}
+  - {ability: WIS, mod: "+0", prof: false}
+  - {ability: CHA, mod: "+0", prof: false}
 senses_list:
-  - name: Passive Perception
-    value: 17
-  - name: Passive Investigation
-    value: 15
-  - name: Passive Insight
-    value: 14
+  - {name: Passive Perception, value: 10}
+  - {name: Passive Investigation, value: 10}
+  - {name: Passive Insight, value: 10}
 skills_list:
-  - ability: DEX
-    name: Acrobatics
-    mod: "+4"
-    prof: false
-  - ability: WIS
-    name: Animal Handling
-    mod: "+4"
-    prof: false
-  - ability: INT
-    name: Arcana
-    mod: "+2"
-    prof: false
-  - ability: STR
-    name: Athletics
-    mod: "+1"
-    prof: false
-  - ability: CHA
-    name: Deception
-    mod: "+2"
-    prof: false
-  - ability: INT
-    name: History
-    mod: "+5"
-    prof: true
-  - ability: WIS
-    name: Insight
-    mod: "+4"
-    prof: false
-  - ability: CHA
-    name: Intimidation
-    mod: "+2"
-    prof: false
-  - ability: INT
-    name: Investigation
-    mod: "+5"
-    prof: true
-  - ability: WIS
-    name: Medicine
-    mod: "+4"
-    prof: false
-  - ability: INT
-    name: Nature
-    mod: "+2"
-    prof: false
-  - ability: WIS
-    name: Perception
-    mod: "+7"
-    prof: true
-  - ability: CHA
-    name: Performance
-    mod: "+2"
-    prof: false
-  - ability: CHA
-    name: Persuasion
-    mod: "+2"
-    prof: false
-  - ability: INT
-    name: Religion
-    mod: "+5"
-    prof: true
-  - ability: DEX
-    name: Sleight of Hand
-    mod: "+4"
-    prof: false
-  - ability: DEX
-    name: Stealth
-    mod: "+4"
-    prof: false
-  - ability: WIS
-    name: Survival
-    mod: "+10"
-    prof: true
+  - {ability: DEX, name: Acrobatics, mod: "+0", prof: false}
+  - {ability: WIS, name: Animal Handling, mod: "+0", prof: false}
+  - {ability: INT, name: Arcana, mod: "+0", prof: false}
+  - {ability: STR, name: Athletics, mod: "+0", prof: false}
+  - {ability: CHA, name: Deception, mod: "+0", prof: false}
+  - {ability: INT, name: History, mod: "+0", prof: false}
+  - {ability: WIS, name: Insight, mod: "+0", prof: false}
+  - {ability: CHA, name: Intimidation, mod: "+0", prof: false}
+  - {ability: INT, name: Investigation, mod: "+0", prof: false}
+  - {ability: WIS, name: Medicine, mod: "+0", prof: false}
+  - {ability: INT, name: Nature, mod: "+0", prof: false}
+  - {ability: WIS, name: Perception, mod: "+0", prof: false}
+  - {ability: CHA, name: Performance, mod: "+0", prof: false}
+  - {ability: CHA, name: Persuasion, mod: "+0", prof: false}
+  - {ability: INT, name: Religion, mod: "+0", prof: false}
+  - {ability: DEX, name: Sleight of Hand, mod: "+0", prof: false}
+  - {ability: DEX, name: Stealth, mod: "+0", prof: false}
+  - {ability: WIS, name: Survival, mod: "+0", prof: false}
 defenses_active: []
-spellcasting_modifier: "+4"
-spell_attack_bonus: "+7"
-spell_save_dc: "15"
-spell_slots_used:
-  "1": 3
-  "2": 2
+spellcasting_modifier: "+0"
+spell_attack_bonus: "+0"
+spell_save_dc: "10"
+spell_slots_used: {}
 heroic_inspiration: false
 death_saves_success:
   - false
@@ -278,7 +181,7 @@ death_saves_fail:
   - false
 ---
 
-# Template PC
+# <% name %>
 
 > [!row]
 >
@@ -315,6 +218,13 @@ death_saves_fail:
 >>     const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n/);
 >>     let body = fmMatch ? content.slice(fmMatch[0].length) : content;
 >>
+>>     // Ability scores (STR/DEX/etc) aren't frontmatter-driven, they're
+>>     // hardcoded in the body HTML - blank all six to a neutral default
+>>     body = body.replace(
+>>       /<span class="stat-mod">[^<]*<\/span><br><span class="stat-score">\([^)]*\)<\/span>/g,
+>>       '<span class="stat-mod">+0</span><br><span class="stat-score">(10)</span>'
+>>     );
+>>
 >>     const blankFrontmatter = `---
 >> cssclasses:
 >>   - dnd-sheet
@@ -331,18 +241,6 @@ death_saves_fail:
 >> player: ""
 >> armor_class: 10
 >> initiative: "+0"
->> str_mod: "+0"
->> str_score: 10
->> dex_mod: "+0"
->> dex_score: 10
->> con_mod: "+0"
->> con_score: 10
->> int_mod: "+0"
->> int_score: 10
->> wis_mod: "+0"
->> wis_score: 10
->> cha_mod: "+0"
->> cha_score: 10
 >> special_senses_list: []
 >> spells: []
 >> hp_current: 10
@@ -2112,7 +2010,7 @@ death_saves_fail:
 ---
 
 > [!quote|no-t]
-> A short, evocative line capturing who this character is.
+> <% quote %>
 
 > [!column|flex 2]
 >> [!important]- DĚJOVÁ LINIE:
@@ -2146,10 +2044,12 @@ death_saves_fail:
 >> ```
 
 # Backstory
-Write the character's backstory here.
+<% backstory %>
 
+<%* if (dndbeyond) { %>
 # DnD Beyond
-<iframe src="" allow="fullscreen" allowfullscreen="" style="height: 100%; width: 100%; aspect-ratio: 1 / 1;"></iframe>
+<iframe src="<% dndbeyond %>" allow="fullscreen" allowfullscreen="" style="height: 100%; width: 100%; aspect-ratio: 1 / 1;"></iframe>
+<%* } %>
 ---
 
 # Life Events

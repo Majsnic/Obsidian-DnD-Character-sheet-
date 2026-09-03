@@ -41,7 +41,7 @@ const aligment = result.Aligment || "";
 const player = result.Player || "";
 const race = result.Race || "";
 const dndbeyond = (result.DnDBeyond && typeof result.DnDBeyond === "object" ? result.DnDBeyond.value : result.DnDBeyond) || "";
-const portrait = result.Portrait.value || "";
+const portrait = result.Portrait.value || "/Kompendium/XZ. Pictures/player.png";
 const quote = result.Quote || "";
 const backstory = result.Backstory || "";
 const pClass = result.pClass.value?.length ? result.pClass.value : [];
@@ -65,7 +65,7 @@ await moveAndOpenFile(tp, name);
 // may not be ready yet - wait for the note's element to actually exist
 // before trying to set its icon, rather than assuming it's there.
 const iconize = app.plugins.plugins["obsidian-icon-folder"];
-const notePath = `Characters/${name}.md`;
+const notePath = `Dungeons & Dragons/01. Kampaň/2. Hráči/${name}.md`;
 for (let i = 0; i < 25; i++) {
   if (document.querySelector(`[data-path="${notePath}"]`)) break;
   await new Promise(r => setTimeout(r, 200));
@@ -689,10 +689,10 @@ death_saves_fail:
 >>> const baseMatch = String(page.base_speed || "0 ft.").match(/(\d+)/);
 >>> const baseNum = baseMatch ? Number(baseMatch[1]) : 0;
 >>> const exhaustion = Number(page.exhaustion_level || 0);
->>> const effective = isZeroed ? 0 : Math.max(0, baseNum - 5 * exhaustion);
+>>> const effective = isZeroed ? 0 : (exhaustion >= 6 ? 0 : Math.max(0, baseNum - 5 * exhaustion));
 >>> dv.container.createEl("span", {cls: "ministat-value", text: `${effective} ft.`});
 >>> if (effective !== baseNum) {
->>>   const note = isZeroed ? "reduced by condition" : `-${baseNum - effective} ft. exhaustion`;
+>>>   const note = isZeroed ? "reduced by condition" : (exhaustion >= 6 ? "speed 0 - Exhaustion 6" : `-${baseNum - effective} ft. exhaustion`);
 >>>   dv.container.createEl("div", {cls: "condition-desc", text: note});
 >>> }
 >>> ```
@@ -2023,7 +2023,7 @@ death_saves_fail:
 >>     name: Name
 >>     filters:
 >>       and:
->>         - file.inFolder("Quests")
+>>         - file.inFolder("Dungeons & Dragons/01. Kampaň/2. Hráči/Úkoly")
 >>         - file.hasLink(this.file)
 >>     order:
 >>       - file.name
@@ -2039,7 +2039,7 @@ death_saves_fail:
 >>     name: Session Notes
 >>     filters:
 >>       and:
->>         - file.inFolder("Session Notes")
+>>         - file.inFolder("Dungeons & Dragons/01. Kampaň/1. Master Plan/Deník")
 >>         - file.hasLink(this.file)
 >> ```
 
